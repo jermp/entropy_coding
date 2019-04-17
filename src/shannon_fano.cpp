@@ -22,7 +22,7 @@ int main(int argc, char** argv) {
         p.reserve(n);
         char s;
         prob_type x;
-        while (in) {
+        for (size_t i = 0; i != n; ++i) {
             in >> s;
             in >> x;
             p.emplace_back(s, x);
