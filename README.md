@@ -2,7 +2,7 @@ Shannon-Fano code
 -----------------
 
 A C++ program that, given a probability distribution
-of symbols, generate the corresponding Shannon-Fano
+of symbols, generates the corresponding Shannon-Fano
 code.
 
 Compile with:
@@ -11,11 +11,11 @@ Compile with:
 	cd build
 	cmake ..
 	make
-	
+
 From inside `build`, run with:
-	
+
 	./shannon_fano ../test/alphabet
-	
+
 to generate the Shannon-Fano code fir the 26-letter
 alphabet.
 
