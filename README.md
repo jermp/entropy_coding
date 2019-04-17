@@ -12,11 +12,11 @@ Compile with:
 	cmake ..
 	make
 
-From inside `build`, run with:
+From inside `build`, run
 
 	./shannon_fano ../test/alphabet
 
-to generate the Shannon-Fano code fir the 26-letter
+to generate the Shannon-Fano code for the 26-letter
 alphabet.
 
 References
