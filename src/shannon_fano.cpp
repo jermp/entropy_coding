@@ -31,7 +31,7 @@ int main(int argc, char** argv) {
     }
 
     bool verbose = false;
-    print(p, 0, n - 1, verbose);
+    print(p, verbose);
 
     return 0;
 }

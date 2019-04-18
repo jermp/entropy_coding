@@ -49,8 +49,7 @@ struct codeword {
 };
 
 template <typename Symbol>
-void print(std::vector<symbol_probability<Symbol>>& p, size_t l, size_t r,
-           bool verbose = false) {
+void print(std::vector<symbol_probability<Symbol>>& p, bool verbose = false) {
     std::sort(p.begin(), p.end(),
               [](auto const& x, auto const& y) { return x.p > y.p; });
     if (verbose) {
@@ -58,9 +57,8 @@ void print(std::vector<symbol_probability<Symbol>>& p, size_t l, size_t r,
             std::cout << sp.s << " " << sp.p << "\n";
         }
     }
-
     codeword c;
-    print(p, l, r, c, verbose);
+    print(p, 0, p.size() - 1, c, verbose);
 }
 
 template <typename Symbol>
