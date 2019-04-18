@@ -31,7 +31,8 @@ int main(int argc, char** argv) {
     }
 
     bool verbose = false;
-    print(p, verbose);
+    double L = print(p, verbose);
+    std::cout << "average codeword length: " << L << " bits" << std::endl;
 
     return 0;
 }

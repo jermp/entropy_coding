@@ -3,71 +3,17 @@
 #include <iostream>
 #include <vector>
 
+#include "util.hpp"
+
 namespace shannon_fano {
 
-typedef uint32_t codeword_type;
-typedef float prob_type;
-
 template <typename Symbol>
-struct symbol_probability {
-    symbol_probability(Symbol s, prob_type p) : s(s), p(p) {}
-    Symbol s;
-    prob_type p;
-};
-
-struct codeword {
-    codeword() : m_pos(0), m_bits(0) {}
-
-    void append(bool bit) {
-        m_bits |= codeword_type(bit) << m_pos++;
-    }
-
-    codeword operator+(bool bit) {
-        codeword x = *this;
-        x.append(bit);
-        return x;
-    }
-
-    codeword operator=(codeword const& rhs) {
-        codeword x;
-        x.m_pos = rhs.m_pos;
-        x.m_bits = rhs.m_bits;
-        return x;
-    }
-
-    friend std::ostream& operator<<(std::ostream& os, codeword const& c) {
-        codeword_type b = c.m_bits;
-        for (uint32_t p = 0; p != c.m_pos; ++p) {
-            os << (b & 1);
-            b >>= 1;
-        }
-        return os;
-    }
-
-    uint32_t m_pos;
-    codeword_type m_bits;
-};
-
-template <typename Symbol>
-void print(std::vector<symbol_probability<Symbol>>& p, bool verbose = false) {
-    std::sort(p.begin(), p.end(),
-              [](auto const& x, auto const& y) { return x.p > y.p; });
-    if (verbose) {
-        for (auto const& sp : p) {
-            std::cout << sp.s << " " << sp.p << "\n";
-        }
-    }
-    codeword c;
-    print(p, 0, p.size() - 1, c, verbose);
-}
-
-template <typename Symbol>
-void print(std::vector<symbol_probability<Symbol>> const& p, size_t l, size_t r,
-           codeword c, bool verbose) {
+double print(std::vector<symbol_probability<Symbol>> const& p, size_t l,
+             size_t r, codeword c, bool verbose) {
     if (l == r) {
         std::cout << "P(" << p[l].s << ") = " << p[l].p << "; C(" << p[l].s
                   << ") = " << c << std::endl;
-        return;
+        return c.length() * p[l].p;
     }
 
     size_t pl = l;
@@ -99,7 +45,19 @@ void print(std::vector<symbol_probability<Symbol>> const& p, size_t l, size_t r,
         std::cout << std::endl;
     }
 
-    print(p, l, pl, c + 0, verbose);
-    print(p, pr, r, c + 1, verbose);
+    return print(p, l, pl, c + 0, verbose) + print(p, pr, r, c + 1, verbose);
+}
+
+template <typename Symbol>
+double print(std::vector<symbol_probability<Symbol>>& p, bool verbose = false) {
+    std::sort(p.begin(), p.end(),
+              [](auto const& x, auto const& y) { return x.p > y.p; });
+    if (verbose) {
+        for (auto const& sp : p) {
+            std::cout << sp.s << " " << sp.p << "\n";
+        }
+    }
+    codeword c;
+    return print(p, 0, p.size() - 1, c, verbose);
 }
 }  // namespace shannon_fano
