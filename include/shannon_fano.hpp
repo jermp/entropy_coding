@@ -38,11 +38,12 @@ double print(std::vector<symbol_probability<Symbol>> const& p, size_t l,
         for (size_t i = l; i != pl + 1; ++i) {
             std::cout << p[i].s << " ";
         }
+        std::cout << "(" << prob_l << ")";
         std::cout << " -- ";
         for (size_t i = pr; i != r + 1; ++i) {
             std::cout << p[i].s << " ";
         }
-        std::cout << std::endl;
+        std::cout << "(" << prob_r << ")" << std::endl;
     }
 
     return print(p, l, pl, c + 0, verbose) + print(p, pr, r, c + 1, verbose);

@@ -67,7 +67,15 @@ double print(std::vector<symbol_probability<Symbol>>& p, bool verbose = false) {
     };
 
     while (internal_nodes.size() != p.size() - 1) {
-        internal_nodes.push_back(make_internal(select_next(), select_next()));
+        node_ptr l = select_next();
+        node_ptr r = select_next();
+        node_ptr n = make_internal(l, r);
+        if (verbose) {
+            std::cout << "created internal node with probability "
+                      << l->symbol.p << " + " << r->symbol.p << " = "
+                      << n->symbol.p << std::endl;
+        }
+        internal_nodes.push_back(n);
     }
 
     node_ptr root = internal_nodes.back();
