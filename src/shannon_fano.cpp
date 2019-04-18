@@ -30,7 +30,8 @@ int main(int argc, char** argv) {
         in.close();
     }
 
-    print(p, 0, n - 1);
+    bool verbose = false;
+    print(p, 0, n - 1, verbose);
 
     return 0;
 }

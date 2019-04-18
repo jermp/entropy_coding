@@ -49,16 +49,23 @@ struct codeword {
 };
 
 template <typename Symbol>
-void print(std::vector<symbol_probability<Symbol>>& p, size_t l, size_t r) {
+void print(std::vector<symbol_probability<Symbol>>& p, size_t l, size_t r,
+           bool verbose = false) {
     std::sort(p.begin(), p.end(),
               [](auto const& x, auto const& y) { return x.p > y.p; });
+    if (verbose) {
+        for (auto const& sp : p) {
+            std::cout << sp.s << " " << sp.p << "\n";
+        }
+    }
+
     codeword c;
-    print(p, l, r, c);
+    print(p, l, r, c, verbose);
 }
 
 template <typename Symbol>
 void print(std::vector<symbol_probability<Symbol>> const& p, size_t l, size_t r,
-           codeword c) {
+           codeword c, bool verbose) {
     if (l == r) {
         std::cout << "P(" << p[l].s << ") = " << p[l].p << "; C(" << p[l].s
                   << ") = " << c << std::endl;
@@ -82,7 +89,19 @@ void print(std::vector<symbol_probability<Symbol>> const& p, size_t l, size_t r,
         }
     }
 
-    print(p, l, pl, c + 0);
-    print(p, pr, r, c + 1);
+    if (verbose) {
+        std::cout << "partitioning around " << p[pl].s << std::endl;
+        for (size_t i = l; i != pl + 1; ++i) {
+            std::cout << p[i].s << " ";
+        }
+        std::cout << " -- ";
+        for (size_t i = pr; i != r + 1; ++i) {
+            std::cout << p[i].s << " ";
+        }
+        std::cout << std::endl;
+    }
+
+    print(p, l, pl, c + 0, verbose);
+    print(p, pr, r, c + 1, verbose);
 }
 }  // namespace shannon_fano
