@@ -39,7 +39,10 @@ int main(int argc, char** argv) {
     if (type == "shannon_fano") {
         L = shannon_fano::print(p, verbose);
     } else if (type == "huffman") {
-        L = huffman::print(p, verbose);
+        auto root = huffman::build_tree(p, verbose);
+        codeword c;
+        L = huffman::print_tree(root, c, verbose);
+        huffman::free_tree(root);
     } else {
         std::cerr << "unknown type '" << type << "'" << std::endl;
         return 1;

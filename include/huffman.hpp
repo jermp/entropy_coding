@@ -39,7 +39,8 @@ bool is_leaf(node<Symbol> const* n) {
 }
 
 template <typename Symbol>
-double print(std::vector<symbol_probability<Symbol>>& p, bool verbose = false) {
+node<Symbol>* build_tree(std::vector<symbol_probability<Symbol>>& p,
+                         bool verbose = false) {
     std::sort(p.begin(), p.end(),
               [](auto const& x, auto const& y) { return x.p < y.p; });
 
@@ -79,31 +80,27 @@ double print(std::vector<symbol_probability<Symbol>>& p, bool verbose = false) {
     }
 
     node_ptr root = internal_nodes.back();
-    codeword c;
-    double L = print(root, c, verbose);
-    free_huffman_tree(root);
-    return L;
+    return root;
 }
 
 template <typename Node>
-double print(Node const* n, codeword c, bool verbose) {
+double print_tree(Node const* n, codeword c, bool verbose) {
     if (is_leaf(n)) {
         std::cout << "C(" << n->symbol.s << ") = " << c << std::endl;
         return c.length() * n->symbol.p;
     }
-
-    return print(n->left, c + 0, verbose) + print(n->right, c + 1, verbose);
+    return print_tree(n->left, c + 0, verbose) +
+           print_tree(n->right, c + 1, verbose);
 }
 
 template <typename Node>
-void free_huffman_tree(Node* n) {
+void free_tree(Node* n) {
     if (is_leaf(n)) {
         free(n);
         return;
     }
-
-    free_huffman_tree(n->left);
-    free_huffman_tree(n->right);
+    free_tree(n->left);
+    free_tree(n->right);
 }
 
 }  // namespace huffman
