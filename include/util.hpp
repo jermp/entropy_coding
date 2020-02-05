@@ -38,6 +38,11 @@ struct codeword {
         return x;
     }
 
+    void copy(codeword const& rhs) {
+        m_pos = rhs.m_pos;
+        m_bits = rhs.m_bits;
+    }
+
     friend std::ostream& operator<<(std::ostream& os, codeword const& c) {
         codeword_type b = c.m_bits;
         for (uint32_t p = 0; p != c.m_pos; ++p) {
