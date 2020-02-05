@@ -17,6 +17,10 @@ struct codeword {
         return m_pos;
     }
 
+    codeword_type get() const {
+        return m_bits;
+    }
+
     void append(bool bit) {
         m_bits |= codeword_type(bit) << m_pos++;
     }
@@ -43,6 +47,7 @@ struct codeword {
         return os;
     }
 
+private:
     uint32_t m_pos;
     codeword_type m_bits;
 };
