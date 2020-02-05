@@ -1,14 +1,13 @@
 #pragma once
 
 typedef uint32_t codeword_type;
-typedef float prob_type;
 
-template <typename Symbol>
-struct symbol_probability {
-    symbol_probability() {}
-    symbol_probability(Symbol s, prob_type p) : s(s), p(p) {}
+template <typename Symbol, typename Weight>
+struct weighted_symbol {
+    weighted_symbol() {}
+    weighted_symbol(Symbol s, Weight w) : s(s), w(w) {}
     Symbol s;
-    prob_type p;
+    Weight w;
 };
 
 struct codeword {

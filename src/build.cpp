@@ -19,14 +19,14 @@ int main(int argc, char** argv) {
         verbose = true;
     }
 
-    std::vector<symbol_probability<char>> p;
+    std::vector<weighted_symbol<char, float>> p;
     size_t n = 0;
     {
         std::ifstream in(input_filename);
         in >> n;
         p.reserve(n);
         char s;
-        prob_type x;
+        float x;
         for (size_t i = 0; i != n; ++i) {
             in >> s;
             in >> x;

@@ -7,44 +7,44 @@
 
 namespace huffman {
 
-template <typename Symbol>
+template <typename Symbol, typename Weight>
 struct node {
-    symbol_probability<Symbol> symbol;
-    node<Symbol>* left;
-    node<Symbol>* right;
+    weighted_symbol<Symbol, Weight> symbol;
+    node<Symbol, Weight>* left;
+    node<Symbol, Weight>* right;
 };
 
-template <typename Symbol>
-static node<Symbol>* make_leaf(symbol_probability<Symbol> const& sf) {
-    node<Symbol>* n = new node<Symbol>();
-    n->symbol.s = sf.s;
-    n->symbol.p = sf.p;
-    n->left = nullptr;
-    n->right = nullptr;
-    return n;
+template <typename Symbol, typename Weight>
+static node<Symbol, Weight>* make_leaf(weighted_symbol<Symbol, Weight> ws) {
+    node<Symbol, Weight>* leaf = new node<Symbol, Weight>();
+    leaf->symbol.s = ws.s;
+    leaf->symbol.w = ws.w;
+    leaf->left = nullptr;
+    leaf->right = nullptr;
+    return leaf;
 }
 
-template <typename Symbol>
-static node<Symbol>* make_internal(node<Symbol>* left, node<Symbol>* right) {
-    node<Symbol>* n = new node<Symbol>();
-    n->symbol.p = left->symbol.p + right->symbol.p;
+template <typename Node>
+static Node* make_internal(Node* left, Node* right) {
+    Node* n = new Node();
+    n->symbol.w = left->symbol.w + right->symbol.w;
     n->left = left;
     n->right = right;
     return n;
 }
 
-template <typename Symbol>
-bool is_leaf(node<Symbol> const* n) {
+template <typename Node>
+bool is_leaf(Node const* n) {
     return n->left == nullptr and n->right == nullptr;
 }
 
-template <typename Symbol>
-node<Symbol>* build_tree(std::vector<symbol_probability<Symbol>>& p,
-                         bool verbose = false) {
+template <typename Symbol, typename Weight>
+node<Symbol, Weight>* build_tree(
+    std::vector<weighted_symbol<Symbol, Weight>>& p, bool verbose = false) {
     std::sort(p.begin(), p.end(),
-              [](auto const& x, auto const& y) { return x.p < y.p; });
+              [](auto const& x, auto const& y) { return x.w < y.w; });
 
-    typedef node<Symbol>* node_ptr;
+    typedef node<Symbol, Weight>* node_ptr;
 
     size_t leaf = 0;
     size_t internal = 0;
@@ -58,7 +58,7 @@ node<Symbol>* build_tree(std::vector<symbol_probability<Symbol>>& p,
         } else if (internal == internal_nodes.size()) {
             n = make_leaf(p[leaf++]);
         } else {
-            if (p[leaf].p <= internal_nodes[internal]->symbol.p) {
+            if (p[leaf].w <= internal_nodes[internal]->symbol.w) {
                 n = make_leaf(p[leaf++]);
             } else {
                 n = internal_nodes[internal++];
@@ -72,9 +72,9 @@ node<Symbol>* build_tree(std::vector<symbol_probability<Symbol>>& p,
         node_ptr r = select_next();
         node_ptr n = make_internal(l, r);
         if (verbose) {
-            std::cout << "created internal node with probability "
-                      << l->symbol.p << " + " << r->symbol.p << " = "
-                      << n->symbol.p << std::endl;
+            std::cout << "created internal node with weight " << l->symbol.w
+                      << " + " << r->symbol.w << " = " << n->symbol.w
+                      << std::endl;
         }
         internal_nodes.push_back(n);
     }
@@ -87,7 +87,7 @@ template <typename Node>
 double print_tree(Node const* n, codeword c, bool verbose) {
     if (is_leaf(n)) {
         std::cout << "C(" << n->symbol.s << ") = " << c << std::endl;
-        return c.length() * n->symbol.p;
+        return c.length() * n->symbol.w;
     }
     return print_tree(n->left, c + 0, verbose) +
            print_tree(n->right, c + 1, verbose);
